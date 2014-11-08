@@ -119,5 +119,4 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         }
         return super.onOptionsItemSelected(item);
     }
-    // hi brandino
 }
