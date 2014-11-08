@@ -1,39 +1,40 @@
 package com.example.hackscapp;
 
-import android.support.v7.app.ActionBarActivity;
+import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.content.Context;
 
 public class MainActivity extends ActionBarActivity implements SensorEventListener {
 	private float mLastX, mLastY, mLastZ;
 	private boolean mInitialized;
 	private SensorManager mSensorManager;
 	private Sensor mAccelerometer;
-	private final float NOISE = (float)8.0;
-	private MediaPlayer mp, mp2;
-	private int sensor_delay = 50000;
+	private final float NOISE = (float)4.0;
+	private MediaPlayer mp;
+	private int sensor_delay = 7500;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
+    	getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mInitialized = false;
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mSensorManager.registerListener(this, mAccelerometer, sensor_delay);
-        mp = MediaPlayer.create(getBaseContext(), R.raw.hi_hat);
-        //mp2 = MediaPlayer.create(getBaseContext(), R.raw.hi_hat);
-        //mp2.setVolume(0.2f, 0.2f);
+        mp = MediaPlayer.create(MainActivity.this, com.example.hackscapp.R.raw.snare_drum);
+
     }
     @Override
     protected void onResume(){
@@ -82,18 +83,22 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     		tvZ.setText(Float.toString(deltaZ));
     		iv.setVisibility(View.VISIBLE);
     		
-    		if (deltaX > deltaY) {
-    		//	if (deltaX > 13.0f){
-    				mp.start();
-    		//	}else{
-    		//		mp2.start();
-    		//	}
-    		} else if (deltaY > deltaX) {
-    		//	if (deltaY > 13.0f){
-    				mp.start();
-    		//	}else{
-    		//		mp2.start();
-    		//	}
+    		if (deltaX > 0f) {
+    				try {
+    					//mp.stop();
+						//mp.reset();
+						
+						//mp = MediaPlayer.create(MainActivity.this,R.raw.hi_hat);
+						//mp.prepareAsync();
+						mp.start();
+    				} catch (IllegalArgumentException e) {
+    		            e.printStackTrace();
+    		        } catch (IllegalStateException e) {
+    		            e.printStackTrace();
+    		        //} catch (IOException e) {
+    		        //   e.printStackTrace();
+    		        }
+    				iv.setImageResource(R.drawable.ic_launcher);
     		} else {
     			iv.setVisibility(View.INVISIBLE);
     		}
@@ -101,6 +106,9 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 
     }
 
+    //public void onPrepared(MediaPlayer mp){
+    //	mp.start();
+    //}
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -119,4 +127,14 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         }
         return super.onOptionsItemSelected(item);
     }
+    @Override
+    protected void onDestroy(){
+    	super.onDestroy();
+    	if (mp != null){
+    		mp.release();
+    		mp = null;
+    	}
+    }
+    // hi brandino
 }
+
