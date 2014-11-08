@@ -5,5 +5,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_">Activity</string>
+    <string name="toggle_on">ON</string>
+    <string name="toggle_off">OFF</string>
+    <string name="recBtn">Record</string>
 
 </resources>

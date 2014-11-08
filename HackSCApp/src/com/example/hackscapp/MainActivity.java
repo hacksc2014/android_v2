@@ -1,6 +1,9 @@
 package com.example.hackscapp;
 
 import android.content.Context;
+import android.view.MotionEvent;
+import android.view.View.OnTouchListener;
+
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -12,8 +15,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity implements SensorEventListener {
 	private float mLastX, mLastY, mLastZ;
@@ -22,7 +27,9 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 	private Sensor mAccelerometer;
 	private final float NOISE = (float)4.0;
 	private MediaPlayer mp;
-	private int sensor_delay = 7500;
+	private int sensor_delay = 25000;
+	private Togglebutton tb;
+	private ImageButton recBtn;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,7 +41,27 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mSensorManager.registerListener(this, mAccelerometer, sensor_delay);
         mp = MediaPlayer.create(MainActivity.this, com.example.hackscapp.R.raw.snare_drum);
+        addListenronButton();
 
+    }
+    public void addListenronButton(){
+    	tb = (ToggleButton) findViewById(R.id.toggleButton);
+    	recBtn = (ImageButton) findViewById(R.id.recBtn);
+    	recBtn.setOnTouchListener(new OnTouchListener(){
+    		@Override
+    		public boolean onTouch(View v, MotionEvent event){
+    			if(event.getAction()== MotionEvent.ACTION_DOWN){
+    				recBtn.setImageResource(R.drawable.rec_btn_pressed);
+    				Toast.makeText(MainActivity.this, "started recording", Toast.LENGTH_SHORT).show();
+    			}
+    			else if (event.getAction() == MotionEvent.ACTION_UP){
+    				recBtn.setImageResource(R.drawable.rec_btn);
+    				Toast.makeText(MainActivity.this, "stopped recording", Toast.LENGTH_SHORT).show();
+    			}
+    			return true;
+    			
+    		}
+    	}
     }
     @Override
     protected void onResume(){
@@ -86,8 +113,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     		if (deltaX > 0f) {
     				try {
     					//mp.stop();
-						//mp.reset();
-						
+						//mp.reset();						
 						//mp = MediaPlayer.create(MainActivity.this,R.raw.hi_hat);
 						//mp.prepareAsync();
 						mp.start();
