@@ -235,6 +235,8 @@ int drawable abc_textfield_searchview_holo_light 0x7f020054
 int drawable abc_textfield_searchview_right_holo_dark 0x7f020055
 int drawable abc_textfield_searchview_right_holo_light 0x7f020056
 int drawable ic_launcher 0x7f020057
+int drawable rec_btn 0x7f020058
+int drawable rec_btn_pressed 0x7f020059
 int id action_bar 0x7f06001c
 int id action_bar_activity_content 0x7f060015
 int id action_bar_container 0x7f06001b
@@ -246,7 +248,7 @@ int id action_context_bar 0x7f06001d
 int id action_menu_divider 0x7f060016
 int id action_menu_presenter 0x7f060017
 int id action_mode_close_button 0x7f060024
-int id action_settings 0x7f06003f
+int id action_settings 0x7f060041
 int id activity_chooser_view_content 0x7f060025
 int id always 0x7f06000b
 int id beginning 0x7f060011
@@ -274,6 +276,7 @@ int id normal 0x7f060000
 int id progress_circular 0x7f060018
 int id progress_horizontal 0x7f060019
 int id radio 0x7f06002f
+int id recBtn 0x7f060040
 int id search_badge 0x7f060032
 int id search_bar 0x7f060031
 int id search_button 0x7f060033
@@ -292,6 +295,7 @@ int id split_action_bar 0x7f06001e
 int id submit_area 0x7f060039
 int id tabMode 0x7f060002
 int id title 0x7f06002b
+int id toggleButton 0x7f06003f
 int id top_action_bar 0x7f060020
 int id up 0x7f060021
 int id useLogo 0x7f060003
@@ -348,7 +352,10 @@ int string abc_shareactionprovider_share_with_application 0x7f0b000b
 int string action_settings 0x7f0b000f
 int string app_name 0x7f0b000d
 int string hello_world 0x7f0b000e
+int string recBtn 0x7f0b0013
 int string title_activity_ 0x7f0b0010
+int string toggle_off 0x7f0b0012
+int string toggle_on 0x7f0b0011
 int style AppBaseTheme 0x7f0c008b
 int style AppTheme 0x7f0c008c
 int style TextAppearance_AppCompat_Base_CompactMenu_Dialog 0x7f0c0063

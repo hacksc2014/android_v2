@@ -19,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 public class MainActivity extends ActionBarActivity implements SensorEventListener {
 	private float mLastX, mLastY, mLastZ;
@@ -28,7 +29,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 	private final float NOISE = (float)4.0;
 	private MediaPlayer mp;
 	private int sensor_delay = 25000;
-	private Togglebutton tb;
+	private ToggleButton tb;
 	private ImageButton recBtn;
 	
     @Override
@@ -47,21 +48,24 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     public void addListenronButton(){
     	tb = (ToggleButton) findViewById(R.id.toggleButton);
     	recBtn = (ImageButton) findViewById(R.id.recBtn);
-    	recBtn.setOnTouchListener(new OnTouchListener(){
-    		@Override
-    		public boolean onTouch(View v, MotionEvent event){
-    			if(event.getAction()== MotionEvent.ACTION_DOWN){
-    				recBtn.setImageResource(R.drawable.rec_btn_pressed);
-    				Toast.makeText(MainActivity.this, "started recording", Toast.LENGTH_SHORT).show();
-    			}
-    			else if (event.getAction() == MotionEvent.ACTION_UP){
-    				recBtn.setImageResource(R.drawable.rec_btn);
-    				Toast.makeText(MainActivity.this, "stopped recording", Toast.LENGTH_SHORT).show();
-    			}
-    			return true;
-    			
-    		}
-    	}
+		recBtn.setOnTouchListener(new OnTouchListener(){
+			@Override
+			public boolean onTouch(View v, MotionEvent event){
+				if(event.getAction() == MotionEvent.ACTION_DOWN)
+					{
+					recBtn.setImageResource(R.drawable.rec_btn_pressed);
+					Toast.makeText(MainActivity.this, "started recording", Toast.LENGTH_SHORT).show();
+					// do recording stuff here
+					}
+				else if (event.getAction() == MotionEvent.ACTION_UP)
+					{
+					recBtn.setImageResource(R.drawable.rec_btn);
+					Toast.makeText(MainActivity.this, "stopped recording", Toast.LENGTH_SHORT).show();
+					// stop recording stuff here
+					}
+				return true;
+			}
+		});	
     }
     @Override
     protected void onResume(){
