@@ -20,7 +20,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 	private SensorManager mSensorManager;
 	private Sensor mAccelerometer;
 	private final float NOISE = (float)8.0;
-	private MediaPlayer mp, mp2;
+	private MediaPlayer mp;
 	private int sensor_delay = 50000;
 	
     @Override
@@ -84,12 +84,14 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     		
     		if (deltaX > deltaY) {
     		//	if (deltaX > 13.0f){
+    				mp.prepareAsync();
     				mp.start();
     		//	}else{
     		//		mp2.start();
     		//	}
     		} else if (deltaY > deltaX) {
     		//	if (deltaY > 13.0f){
+    				mp.prepareAsync();
     				mp.start();
     		//	}else{
     		//		mp2.start();
