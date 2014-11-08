@@ -28,7 +28,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 	private Sensor mAccelerometer;
 	private final float NOISE = (float)4.0;
 	private MediaPlayer mp;
-	private int sensor_delay = 25000;
+	private int sensor_delay = 100000;
 	private ToggleButton tb;
 	private ImageButton recBtn;
 	private boolean Pressed;
@@ -42,7 +42,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mSensorManager.registerListener(this, mAccelerometer, sensor_delay);
-        mp = MediaPlayer.create(MainActivity.this, com.example.hackscapp.R.raw.snare_drum);
+        mp = MediaPlayer.create(MainActivity.this, com.example.hackscapp.R.raw.clave);
         addListenronButton();
         Pressed = false;
 
