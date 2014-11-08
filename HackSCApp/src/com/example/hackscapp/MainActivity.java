@@ -9,9 +9,15 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 import android.content.Context;
 
 public class MainActivity extends ActionBarActivity implements SensorEventListener {
@@ -22,6 +28,8 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 	private final float NOISE = (float)8.0;
 	private MediaPlayer mp, mp2;
 	private int sensor_delay = 50000;
+	private ToggleButton tb;
+	private ImageButton recBtn;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,9 +40,35 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mSensorManager.registerListener(this, mAccelerometer, sensor_delay);
         mp = MediaPlayer.create(getBaseContext(), R.raw.hi_hat);
+        addListeneronButton();
         //mp2 = MediaPlayer.create(getBaseContext(), R.raw.hi_hat);
         //mp2.setVolume(0.2f, 0.2f);
     }
+    
+    public void addListeneronButton(){
+    	tb = (ToggleButton) findViewById(R.id.toggleButton);
+    	recBtn = (ImageButton) findViewById(R.id.recBtn);
+    		recBtn.setOnTouchListener(new OnTouchListener(){
+    			@Override
+    			public boolean onTouch(View v, MotionEvent event){
+    				if(event.getAction() == MotionEvent.ACTION_DOWN)
+    					{
+    					recBtn.setImageResource(R.drawable.rec_btn_pressed);
+    					Toast.makeText(MainActivity.this, "started recording", Toast.LENGTH_SHORT).show();
+    					// do recording stuff here
+    					}
+    				else if (event.getAction() == MotionEvent.ACTION_UP)
+    					{
+    					recBtn.setImageResource(R.drawable.rec_btn);
+    					Toast.makeText(MainActivity.this, "stopped recording", Toast.LENGTH_SHORT).show();
+    					// stop recording stuff here
+    					}
+    				return true;
+    			}
+    		});	
+ 
+    }
+    
     @Override
     protected void onResume(){
     	super.onResume();

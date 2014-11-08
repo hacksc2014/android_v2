@@ -1078,6 +1078,8 @@ containing a value of this type.
         public static final int abc_textfield_searchview_right_holo_dark=0x7f020055;
         public static final int abc_textfield_searchview_right_holo_light=0x7f020056;
         public static final int ic_launcher=0x7f020057;
+        public static final int rec_btn=0x7f020058;
+        public static final int rec_btn_pressed=0x7f020059;
     }
     public static final class id {
         public static final int action_bar=0x7f06001c;
@@ -1091,7 +1093,7 @@ containing a value of this type.
         public static final int action_menu_divider=0x7f060016;
         public static final int action_menu_presenter=0x7f060017;
         public static final int action_mode_close_button=0x7f060024;
-        public static final int action_settings=0x7f06003f;
+        public static final int action_settings=0x7f060041;
         public static final int activity_chooser_view_content=0x7f060025;
         public static final int always=0x7f06000b;
         public static final int beginning=0x7f060011;
@@ -1119,6 +1121,7 @@ containing a value of this type.
         public static final int progress_circular=0x7f060018;
         public static final int progress_horizontal=0x7f060019;
         public static final int radio=0x7f06002f;
+        public static final int recBtn=0x7f060040;
         public static final int search_badge=0x7f060032;
         public static final int search_bar=0x7f060031;
         public static final int search_button=0x7f060033;
@@ -1137,6 +1140,7 @@ containing a value of this type.
         public static final int submit_area=0x7f060039;
         public static final int tabMode=0x7f060002;
         public static final int title=0x7f06002b;
+        public static final int toggleButton=0x7f06003f;
         public static final int top_action_bar=0x7f060020;
         public static final int up=0x7f060021;
         public static final int useLogo=0x7f060003;
@@ -1251,7 +1255,10 @@ containing a value of this type.
         public static final int action_settings=0x7f0b000f;
         public static final int app_name=0x7f0b000d;
         public static final int hello_world=0x7f0b000e;
+        public static final int recBtn=0x7f0b0013;
         public static final int title_activity_=0x7f0b0010;
+        public static final int toggle_off=0x7f0b0012;
+        public static final int toggle_on=0x7f0b0011;
     }
     public static final class style {
         /** 
