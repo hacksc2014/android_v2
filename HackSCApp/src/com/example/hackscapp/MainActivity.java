@@ -31,6 +31,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 	private int sensor_delay = 25000;
 	private ToggleButton tb;
 	private ImageButton recBtn;
+	private boolean Pressed;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,6 +44,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         mSensorManager.registerListener(this, mAccelerometer, sensor_delay);
         mp = MediaPlayer.create(MainActivity.this, com.example.hackscapp.R.raw.snare_drum);
         addListenronButton();
+        Pressed = false;
 
     }
     public void addListenronButton(){
@@ -53,12 +55,14 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 			public boolean onTouch(View v, MotionEvent event){
 				if(event.getAction() == MotionEvent.ACTION_DOWN)
 					{
+					Pressed = true;
 					recBtn.setImageResource(R.drawable.rec_btn_pressed);
 					Toast.makeText(MainActivity.this, "started recording", Toast.LENGTH_SHORT).show();
 					// do recording stuff here
 					}
 				else if (event.getAction() == MotionEvent.ACTION_UP)
 					{
+					Pressed = false;
 					recBtn.setImageResource(R.drawable.rec_btn);
 					Toast.makeText(MainActivity.this, "stopped recording", Toast.LENGTH_SHORT).show();
 					// stop recording stuff here
@@ -114,7 +118,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     		tvZ.setText(Float.toString(deltaZ));
     		iv.setVisibility(View.VISIBLE);
     		
-    		if (deltaX > 0f) {
+    		if (deltaX > 0f && Pressed) {
     				try {
     					//mp.stop();
 						//mp.reset();						
