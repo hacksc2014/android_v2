@@ -33,7 +33,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 	private Sensor mAccelerometer;
 	private final float NOISE = (float)10.0;
 	private MediaPlayer mp;
-	private int sensor_delay = 100000;
+	private int sensor_delay = 200000;
 	private ToggleButton tb;
 	private ImageButton recBtn;
 	private boolean Pressed;
@@ -109,9 +109,9 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     		tvZ.setText("0.0");
     		mInitialized = true;
     	} else {
-    		float deltaX = mLastX - x;
-    		float deltaY = mLastY - y;
-    		float deltaZ = mLastZ - z;
+    		float deltaX = Math.abs(mLastX - x);
+    		float deltaY = Math.abs(mLastY - y);
+    		float deltaZ = Math.abs(mLastZ - z);
     		if (deltaX < NOISE) deltaX = (float)0.0;
     		if (deltaY < NOISE) deltaY = (float)0.0;
     		if (deltaZ < NOISE) deltaZ = (float)0.0;
