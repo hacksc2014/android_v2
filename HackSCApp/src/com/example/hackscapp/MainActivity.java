@@ -3,7 +3,11 @@ package com.example.hackscapp;
 import android.content.Context;
 import android.view.MotionEvent;
 import android.view.View.OnTouchListener;
-
+import android.view.ViewGroup;
+import android.util.Log;
+import android.media.MediaRecorder;
+import android.app.Activity;
+import android.os.Environment;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -20,6 +24,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+import android.widget.Button;
+import android.widget.LinearLayout;
+
+
+import java.io.IOException;
 
 public class MainActivity extends ActionBarActivity implements SensorEventListener {
 	private float mLastX, mLastY, mLastZ;
@@ -29,9 +38,14 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 	private final float NOISE = (float)4.0;
 	private MediaPlayer mp;
 	private int sensor_delay = 100000;
-	private ToggleButton tb;
+	private ToggleButton record_button;
 	private ImageButton recBtn;
 	private boolean Pressed;
+	
+	private static String BeatFile = null;
+	private MediaRecorder beat_record = null;
+	private ImageButton play_button = null;
+	private MediaPlayer m2 = null;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,7 +62,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 
     }
     public void addListenronButton(){
-    	tb = (ToggleButton) findViewById(R.id.toggleButton);
+    	record_button = (ToggleButton) findViewById(R.id.toggleButton);
     	recBtn = (ImageButton) findViewById(R.id.recBtn);
 		recBtn.setOnTouchListener(new OnTouchListener(){
 			@Override
@@ -56,6 +70,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 				if(event.getAction() == MotionEvent.ACTION_DOWN)
 					{
 					Pressed = true;
+					recording();
 					recBtn.setImageResource(R.drawable.rec_btn_pressed);
 					Toast.makeText(MainActivity.this, "started recording", Toast.LENGTH_SHORT).show();
 					// do recording stuff here
@@ -71,12 +86,28 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 			}
 		});	
     }
+    public void recording(){
+    	beat_record = new MediaRecorder();
+    	beat_record.setAudioSource(MediaRecorder.AudioSource.MIC);
+    	beat_record.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+    	beat_record.setOutputFile(BeatFile);
+    	beat_record.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+
+        try {
+            beat_record.prepare();
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "prepare() failed");
+        }
+
+        beat_record.start(); 
+    }
     @Override
     protected void onResume(){
     	super.onResume();
         mSensorManager.registerListener(this, mAccelerometer, sensor_delay);
 
     }
+    
     @Override
     protected void onPause(){
     	super.onPause();
