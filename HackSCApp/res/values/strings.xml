@@ -8,5 +8,6 @@
     <string name="toggle_on">ON</string>
     <string name="toggle_off">OFF</string>
     <string name="recBtn">Record</string>
+    <string name ="playbackButton">Play</string>
 
 </resources>

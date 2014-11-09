@@ -1,7 +1,9 @@
 package com.example.hackscapp;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -15,11 +17,14 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -31,12 +36,18 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 	private boolean mInitialized;
 	private SensorManager mSensorManager;
 	private Sensor mAccelerometer;
-	private final float NOISE = (float)10.0;
+	private final float NOISE = (float)11.0;
 	private MediaPlayer mp;
-	private int sensor_delay = 200000;
+	private int sensor_delay = 150000;
 	private ToggleButton tb;
 	private ImageButton recBtn;
 	private boolean Pressed;
+	private long lastDown;
+	private long lastDuration;
+	private long playback[];
+	private int playback_index;
+	private int final_index;
+	private Button playback_button;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,15 +58,35 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mSensorManager.registerListener(this, mAccelerometer, sensor_delay);
-        mp = MediaPlayer.create(MainActivity.this, com.example.hackscapp.R.raw.hi_hat);
-        addListenronButton();
+        mp = MediaPlayer.create(MainActivity.this, com.example.hackscapp.R.raw.snare_drum);
+        addListeneronButton();
         Pressed = false;
-
+        //playback = new ArrayList<Long>();
+        playback = new long[100];
+        playback_index= 0;
+        final_index = 0;
+        
     }
-    public void addListenronButton(){
+    @SuppressLint("NewApi")
+    public void addListeneronButton(){
     	tb = (ToggleButton) findViewById(R.id.toggleButton);
     	recBtn = (ImageButton) findViewById(R.id.recBtn);
+    	playback_button = (Button) findViewById(R.id.playbackButton);
+        playback_button.setOnClickListener(new OnClickListener(){
+        	public void onClick(View v){
+        		for (int i = 0; i < final_index; i++){
+        			if (i ==0){
+        				SystemClock.sleep(playback[i]);
+        				new PlayAsync().execute("","","");
+        			}else{
+        				SystemClock.sleep(playback[i] - playback[i-1]);
+        				new PlayAsync().execute("","","");
+        			}
+        		}
+        	}
+        });
 		recBtn.setOnTouchListener(new OnTouchListener(){
+			@SuppressLint("NewApi")
 			@Override
 			public boolean onTouch(View v, MotionEvent event){
 				if(event.getAction() == MotionEvent.ACTION_DOWN)
@@ -63,15 +94,28 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 					Pressed = true;
 					recBtn.setImageResource(R.drawable.rec_btn_pressed);
 					Toast.makeText(MainActivity.this, "started recording", Toast.LENGTH_SHORT).show();
+					lastDown = System.currentTimeMillis();
+				
 					// do recording stuff here
 					}
 				else if (event.getAction() == MotionEvent.ACTION_UP)
 					{
 					Pressed = false;
 					recBtn.setImageResource(R.drawable.rec_btn);
-					Toast.makeText(MainActivity.this, "stopped recording", Toast.LENGTH_SHORT).show();
+					lastDuration = System.currentTimeMillis() - lastDown;
+					int seconds = (int) (lastDuration / 1000) % 60 ;
+					int centis = ((int) (lastDuration) - seconds * 1000)/10;
+					String duration = Integer.toString(seconds) + "." + Integer.toString(centis)                                                                                                                                                                                                                                            ;
+					Toast.makeText(MainActivity.this, "stopped recording, duration:"+duration+"s", Toast.LENGTH_SHORT).show();
+					//Toast.makeText(MainActivity.this, playback.size(), Toast.LENGTH_SHORT).show();
 					// stop recording stuff here
+					for (int i = 0; i < playback_index; i++){
+						System.out.println(playback[i]);
 					}
+					final_index = playback_index;
+					playback_index = 0;
+					}
+				
 				return true;
 			}
 		});	
@@ -109,7 +153,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     		tvZ.setText("0.0");
     		mInitialized = true;
     	} else {
-    		float deltaX = Math.abs(mLastX - x);
+    		float deltaX = -(mLastX - x);
     		float deltaY = Math.abs(mLastY - y);
     		float deltaZ = Math.abs(mLastZ - z);
     		if (deltaX < NOISE) deltaX = (float)0.0;
@@ -124,18 +168,18 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     		iv.setVisibility(View.VISIBLE);
     		
     		if (deltaX > 0f && Pressed) {
+    			playback[playback_index] = System.currentTimeMillis() - lastDown;
+    			playback_index++;
+    			//playback.add(System.currentTimeMillis() - lastDown);
+    			
     				try {
-    					//mp.stop();
-						//mp.reset();						
-						//mp = MediaPlayer.create(MainActivity.this,R.raw.hi_hat);
-						//mp.start();
+
     					new PlayAsync().execute("","","");
     				} catch (IllegalArgumentException e) {
     		            e.printStackTrace();
     		        } catch (IllegalStateException e) {
     		            e.printStackTrace();
-    		        //} catch (IOException e) {
-    		        //   e.printStackTrace();
+
     		        }
     				iv.setImageResource(R.drawable.ic_launcher);
     		} else {
@@ -191,7 +235,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         // Download Music File from Internet
         @Override
         protected String doInBackground(String... f_url) {
-        	mp = MediaPlayer.create(MainActivity.this,R.raw.hi_hat);
+        	mp = MediaPlayer.create(MainActivity.this,R.raw.snare_drum);
         	mp.start();
         	return null;         
         }

@@ -69,14 +69,22 @@ android:visibility="invisible"/>
         android:textOn="@string/toggle_on"
 		android:textOff="@string/toggle_off"
 		android:checked="true"/>
+
 <ImageButton
-        android:id="@+id/recBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/recBtn" 
-        android:layout_marginTop="5dp"
-        android:background="@null"
-        android:src="@drawable/rec_btn" />
+    android:id="@+id/recBtn"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:background="@null"
+    android:src="@drawable/rec_btn"
+    android:text="@string/recBtn" 
+	android:layout_gravity="center_horizontal"/>
+
+<Button
+    android:id="@+id/playbackButton"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/playbackButton" />
 
 </LinearLayout>
 
