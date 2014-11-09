@@ -1,9 +1,7 @@
 package com.example.hackscapp;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -33,15 +31,12 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 	private boolean mInitialized;
 	private SensorManager mSensorManager;
 	private Sensor mAccelerometer;
-	private final float NOISE = (float)9.0;
+	private final float NOISE = (float)10.0;
 	private MediaPlayer mp;
 	private int sensor_delay = 200000;
 	private ToggleButton tb;
 	private ImageButton recBtn;
 	private boolean Pressed;
-	private ArrayList record;
-	private long lastDown;
-	private long lastDuration;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,13 +50,12 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         mp = MediaPlayer.create(MainActivity.this, com.example.hackscapp.R.raw.hi_hat);
         addListenronButton();
         Pressed = false;
+
     }
-    @SuppressLint("NewApi")
     public void addListenronButton(){
     	tb = (ToggleButton) findViewById(R.id.toggleButton);
     	recBtn = (ImageButton) findViewById(R.id.recBtn);
 		recBtn.setOnTouchListener(new OnTouchListener(){
-			@SuppressLint("NewApi")
 			@Override
 			public boolean onTouch(View v, MotionEvent event){
 				if(event.getAction() == MotionEvent.ACTION_DOWN)
@@ -69,20 +63,13 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 					Pressed = true;
 					recBtn.setImageResource(R.drawable.rec_btn_pressed);
 					Toast.makeText(MainActivity.this, "started recording", Toast.LENGTH_SHORT).show();
-					lastDown = System.currentTimeMillis();
 					// do recording stuff here
 					}
 				else if (event.getAction() == MotionEvent.ACTION_UP)
 					{
-					recBtn.setImageResource(R.drawable.rec_btn);
-					lastDuration = System.currentTimeMillis()- lastDown;
-					int seconds = (int) (lastDuration/1000) % 60;
-					int centis = ((int) (lastDuration) - seconds * 1000)/10;
-					String duration = Integer.toString(seconds) + "." + Integer.toString(centis);
-					Toast.makeText(MainActivity.this, "stopped recording, duration:"+duration+"s", Toast.LENGTH_SHORT).show();
 					Pressed = false;
-					
-					
+					recBtn.setImageResource(R.drawable.rec_btn);
+					Toast.makeText(MainActivity.this, "stopped recording", Toast.LENGTH_SHORT).show();
 					// stop recording stuff here
 					}
 				return true;
