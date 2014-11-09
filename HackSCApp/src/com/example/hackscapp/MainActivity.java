@@ -1,6 +1,9 @@
 package com.example.hackscapp;
 
+import java.io.IOException;
+
 import android.content.Context;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View.OnTouchListener;
 
@@ -9,6 +12,8 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -26,7 +31,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 	private boolean mInitialized;
 	private SensorManager mSensorManager;
 	private Sensor mAccelerometer;
-	private final float NOISE = (float)4.0;
+	private final float NOISE = (float)10.0;
 	private MediaPlayer mp;
 	private int sensor_delay = 100000;
 	private ToggleButton tb;
@@ -42,7 +47,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mSensorManager.registerListener(this, mAccelerometer, sensor_delay);
-        mp = MediaPlayer.create(MainActivity.this, com.example.hackscapp.R.raw.clave);
+        mp = MediaPlayer.create(MainActivity.this, com.example.hackscapp.R.raw.hi_hat);
         addListenronButton();
         Pressed = false;
 
@@ -123,8 +128,8 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     					//mp.stop();
 						//mp.reset();						
 						//mp = MediaPlayer.create(MainActivity.this,R.raw.hi_hat);
-						//mp.prepareAsync();
-						mp.start();
+						//mp.start();
+    					new PlayAsync().execute("","","");
     				} catch (IllegalArgumentException e) {
     		            e.printStackTrace();
     		        } catch (IllegalStateException e) {
@@ -140,9 +145,10 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 
     }
 
-    //public void onPrepared(MediaPlayer mp){
-    //	mp.start();
-    //}
+    public void onPrepared(MediaPlayer mp){
+    	Log.d("Try", "Playing");
+    	mp.start();
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -170,5 +176,33 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     	}
     }
     // hi brandino
+    
+    class PlayAsync extends AsyncTask<String, String, String> {
+    	 
+        // Show Progress bar before downloading Music
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            // Shows Progress Bar Dialog and then call doInBackground method
+            mp.release();
+			//mp.start();
+        }
+
+        // Download Music File from Internet
+        @Override
+        protected String doInBackground(String... f_url) {
+        	mp = MediaPlayer.create(MainActivity.this,R.raw.hi_hat);
+        	mp.start();
+        	return null;         
+        }
+
+        // Once Music File is downloaded
+        @Override
+        protected void onPostExecute(String file_url) {
+            // Dismiss the dialog after the Music file was downloaded
+        	
+        }
+    }
+
 }
 
