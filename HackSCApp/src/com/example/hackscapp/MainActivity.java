@@ -1,34 +1,54 @@
 package com.example.hackscapp;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.ShareActionProvider;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.ShareCompat;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
+
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
+import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Build;
+
+
 import android.view.MotionEvent;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.View.OnTouchListener;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.view.View;
+import android.view.WindowManager;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.media.MediaPlayer;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.WindowManager;
+
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-public class MainActivity extends ActionBarActivity implements SensorEventListener {
+public class MainActivity extends ActionBarActivity implements SensorEventListener, NavigationDrawerFragment.NavigationDrawerCallbacks {
 	private float mLastX, mLastY, mLastZ;
 	private boolean mInitialized;
 	private SensorManager mSensorManager;
@@ -42,6 +62,9 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 	private ArrayList record;
 	private long lastDown;
 	private long lastDuration;
+	private ShareActionProvider mShareActionProvider;
+	private NavigationDrawerFragment mNavigationDrawerFragment;
+	private CharSequence mTitle;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,6 +72,13 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mInitialized = false;
+        
+        mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
+				.findFragmentById(R.id.navigation_drawer);
+		mTitle = getTitle();
+		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
+				(DrawerLayout) findViewById(R.id.drawer_layout));
+        
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mSensorManager.registerListener(this, mAccelerometer, sensor_delay);
@@ -95,6 +125,55 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         mSensorManager.registerListener(this, mAccelerometer, sensor_delay);
 
     }
+    @Override
+	public void onNavigationDrawerItemSelected(int position) {
+		// update the main content by replacing fragments
+		FragmentManager fragmentManager = getSupportFragmentManager();
+		switch (position+1) {
+		case 1:
+			fragmentManager
+			.beginTransaction()
+			.replace(R.id.container,
+					PlaceholderFragment.newInstance(position + 1)).commit();
+			break;
+		case 2:
+			
+			fragmentManager
+			.beginTransaction()
+			.replace(R.id.container,
+					SectionOneFragment.newInstance(position + 1)).commit();
+			
+			break;
+		case 3:
+			fragmentManager
+			.beginTransaction()
+			.replace(R.id.container,
+					SectionTwoFragment.newInstance(position + 1)).commit();
+			
+			break;
+		}
+
+	}
+    public void restoreActionBar() {
+		ActionBar actionBar = getSupportActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		actionBar.setDisplayShowTitleEnabled(true);
+		actionBar.setTitle(mTitle);
+	}
+    public void onSectionAttached(int number) {
+		switch (number) {
+		case 1:
+			mTitle = "Home";
+			break;
+		case 2:
+			mTitle = "History";
+			break;
+		case 3:
+			mTitle = "About and Help";
+			break;
+		}
+	}
+
     @Override
     protected void onPause(){
     	super.onPause();
@@ -164,10 +243,128 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+    	if (!mNavigationDrawerFragment.isDrawerOpen()) {
+    		// Inflate the menu; this adds items to the action bar if it is present.
+    		getMenuInflater().inflate(R.menu.main, menu);
+    		restoreActionBar();
+    		return true;
+    	}
+    	return true;
     }
+    public static class PlaceholderFragment extends Fragment {
+		/**
+		 * The fragment argument representing the section number for this
+		 * fragment.
+		 */
+		private static final String ARG_SECTION_NUMBER = "section_number";
+
+		/**
+		 * Returns a new instance of this fragment for the given section number.
+		 */
+		public static PlaceholderFragment newInstance(int sectionNumber) {
+			PlaceholderFragment fragment = new PlaceholderFragment();
+			Bundle args = new Bundle();
+			args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+			fragment.setArguments(args);
+			return fragment;
+		}
+
+		public PlaceholderFragment() {
+		}
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.fragment_main, container,
+					false);
+			setHasOptionsMenu(true);
+			return rootView;
+		}
+
+		@Override
+		public void onAttach(Activity activity) {
+			super.onAttach(activity);
+			((MainActivity) activity).onSectionAttached(getArguments().getInt(
+					ARG_SECTION_NUMBER));
+		}
+	}
+	public static class SectionOneFragment extends Fragment {
+		/**
+		 * The fragment argument representing the section number for this
+		 * fragment.
+		 */
+		private static final String ARG_SECTION_NUMBER = "section_number";
+
+		/**
+		 * Returns a new instance of this fragment for the given section number.
+		 */
+		public static SectionOneFragment newInstance(int sectionNumber) {
+			
+			SectionOneFragment fragment = new SectionOneFragment();
+			Bundle args = new Bundle();
+			args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+			fragment.setArguments(args);
+			return fragment;
+		}
+
+		public SectionOneFragment() {
+		}
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.fragment_1, container,
+					false);
+			setHasOptionsMenu(true);
+			return rootView;
+		}
+
+		@Override
+		public void onAttach(Activity activity) {
+			super.onAttach(activity);
+			((MainActivity) activity).onSectionAttached(getArguments().getInt(
+					ARG_SECTION_NUMBER));
+		}
+	}
+
+	public static class SectionTwoFragment extends Fragment {
+		/**
+		 * The fragment argument representing the section number for this
+		 * fragment.
+		 */
+		private static final String ARG_SECTION_NUMBER = "section_number";
+
+		/**
+		 * Returns a new instance of this fragment for the given section number.
+		 */
+		public static SectionTwoFragment newInstance(int sectionNumber) {
+			
+			SectionTwoFragment fragment = new SectionTwoFragment();
+			Bundle args = new Bundle();
+			args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+			fragment.setArguments(args);
+			return fragment;
+		}
+
+		public SectionTwoFragment() {
+		}
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.fragment_2, container,
+					false);
+			setHasOptionsMenu(true);
+			return rootView;
+		}
+
+		@Override
+		public void onAttach(Activity activity) {
+			super.onAttach(activity);
+			((MainActivity) activity).onSectionAttached(getArguments().getInt(
+					ARG_SECTION_NUMBER));
+		}
+	}
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
