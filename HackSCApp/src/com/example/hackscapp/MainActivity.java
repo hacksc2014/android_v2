@@ -41,7 +41,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 	private ToggleButton record_button;
 	private ImageButton recBtn;
 	private boolean Pressed;
-	
+	private static final String LOG_TAG = "AudioRecordTest";
 	private static String BeatFile = null;
 	private MediaRecorder beat_record = null;
 	private ImageButton play_button = null;
@@ -69,7 +69,6 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 			public boolean onTouch(View v, MotionEvent event){
 				if(event.getAction() == MotionEvent.ACTION_DOWN)
 					{
-					Pressed = true;
 					recording();
 					recBtn.setImageResource(R.drawable.rec_btn_pressed);
 					Toast.makeText(MainActivity.this, "started recording", Toast.LENGTH_SHORT).show();
@@ -77,7 +76,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 					}
 				else if (event.getAction() == MotionEvent.ACTION_UP)
 					{
-					Pressed = false;
+					stop_recording();
 					recBtn.setImageResource(R.drawable.rec_btn);
 					Toast.makeText(MainActivity.this, "stopped recording", Toast.LENGTH_SHORT).show();
 					// stop recording stuff here
@@ -106,6 +105,11 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     	super.onResume();
         mSensorManager.registerListener(this, mAccelerometer, sensor_delay);
 
+    }
+    private void stop_recording() {
+        beat_record.stop();
+        beat_record.release();
+        beat_record = null;
     }
     
     @Override
@@ -149,7 +153,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     		tvZ.setText(Float.toString(deltaZ));
     		iv.setVisibility(View.VISIBLE);
     		
-    		if (deltaX > 0f && Pressed) {
+    		if (deltaX > 0f) {
     				try {
     					//mp.stop();
 						//mp.reset();						
